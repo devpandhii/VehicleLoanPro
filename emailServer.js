@@ -46,6 +46,42 @@ app.post('/send-welcome-email', async (req, res) => {
     }
 });
 
+app.post('/send-otp-email', async (req, res) => {
+    try {
+        const { email, name, otp } = req.body;
+
+        if (!email || !name || !otp) {
+            return res.status(400).json({
+                success: false,
+                message: 'Email, name, and OTP are required'
+            });
+        }
+
+        const result = await emailService.sendOtpEmail(email, name, otp);
+
+        if (result.success) {
+            res.status(200).json({
+                success: true,
+                message: 'OTP email sent successfully',
+                messageId: result.messageId
+            });
+        } else {
+            res.status(500).json({
+                success: false,
+                message: 'Failed to send OTP email',
+                error: result.error
+            });
+        }
+    } catch (error) {
+        console.error('OTP Email API error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error'
+        });
+    }
+});
+
+
 // Health check endpoint
 app.get('/health', (req, res) => {
     res.json({ status: 'Email service is running' });

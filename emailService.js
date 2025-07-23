@@ -70,6 +70,33 @@ this.transporter = nodemailer.createTransport({
             </html>
         `;
     }
+
+    async sendOtpEmail(toEmail, name, otp) {
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: toEmail,
+        subject: 'Your VehicleLoan Pro OTP Code',
+        html: `
+            <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9; border-radius: 10px;">
+                <h2 style="color: #667eea;">Hi ${name},</h2>
+                <p>🛡️ Please use the OTP below to complete your login:</p>
+                <div style="font-size: 28px; font-weight: bold; margin: 20px 0; color: #333;">${otp}</div>
+                <p>This OTP is valid for a short time. Do not share it with anyone.</p>
+                <p style="margin-top: 24px;">Regards,<br><strong style="color: #667eea;">VehicleLoan Pro</strong></p>
+            </div>
+        `
+    };
+
+    try {
+        const info = await this.transporter.sendMail(mailOptions);
+        console.log('OTP email sent successfully:', info.messageId);
+        return { success: true, messageId: info.messageId };
+    } catch (error) {
+        console.error('OTP email failed:', error);
+        return { success: false, error: error.message };
+    }
+}
+
 }
 
 module.exports = EmailService;
