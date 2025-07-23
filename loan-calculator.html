@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loan Calculator - VehicleLoan Pro</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    /* Enhanced CSS matching index.html styling */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* Animated background particles */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+    }
+
+    /* Enhanced Navbar */
+    .navbar {
+      background: rgba(255, 255, 255, 0.95) !important;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .navbar-brand {
+      font-weight: bold;
+      font-size: 1.6rem;
+      color: #667eea !important;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-nav .nav-link {
+      color: #333 !important;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .navbar-nav .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: #667eea;
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    .navbar-nav .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .navbar-nav .nav-link:hover {
+      color: #667eea !important;
+      transform: translateY(-2px);
+    }
+
+    .navbar-nav .nav-link.active {
+      color: #667eea !important;
+    }
+
+    .navbar-nav .nav-link.active::after {
+      width: 100%;
+    }
+
+    /* Main Content */
+    .main-content {
+      padding-top: 100px;
+      min-height: 100vh;
+    }
+
+    .page-header {
+      text-align: center;
+      color: white;
+      margin-bottom: 40px;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .page-header h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .page-header p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+
+    /* Calculator Container */
+    .calculator-container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+      margin-bottom: 40px;
+      animation: slideInUp 0.8s ease-out;
+    }
+
+    .calculator-section {
+      margin-bottom: 30px;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #667eea;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title i {
+      font-size: 1.3rem;
+    }
+
+    /* Vehicle Type Selection */
+    .vehicle-types {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .vehicle-card {
+      background: white;
+      border: 2px solid #e9ecef;
+      border-radius: 15px;
+      padding: 25px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      min-width: 150px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .vehicle-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .vehicle-card.active {
+      border-color: #667eea;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      transform: translateY(-5px);
+    }
+
+    .vehicle-card i {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      color: #667eea;
+    }
+
+    .vehicle-card.active i {
+      color: white;
+    }
+
+    .vehicle-card h5 {
+      font-weight: 600;
+      margin: 0;
+    }
+
+    /* Form Controls */
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-control {
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      padding: 15px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    .form-control:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+
+    /* Slider Styling */
+    .slider-container {
+      margin: 20px 0;
+    }
+
+    .slider-wrapper {
+      position: relative;
+      margin: 20px 0;
+    }
+
+    .form-range {
+      width: 100%;
+      height: 8px;
+      background: #e9ecef;
+      border-radius: 5px;
+      outline: none;
+    }
+
+    .form-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 25px;
+      height: 25px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .form-range::-webkit-slider-thumb:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .form-range::-moz-range-thumb {
+      width: 25px;
+      height: 25px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .slider-value {
+      position: absolute;
+      top: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #667eea;
+      color: white;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .slider-value::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 8px solid #667eea;
+    }
+
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    /* Results Section */
+    .results-container {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      margin-top: 30px;
+      border-left: 5px solid #667eea;
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .result-card {
+      background: linear-gradient(135deg, #f8f9ff, #e8f0fe);
+      border-radius: 12px;
+      padding: 25px;
+      text-align: center;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+
+    .result-card:hover {
+      transform: translateY(-5px);
+      border-color: #667eea;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .result-card .icon {
+      font-size: 2.5rem;
+      color: #667eea;
+      margin-bottom: 15px;
+    }
+
+    .result-card h4 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 5px;
+    }
+
+    .result-card p {
+      color: #666;
+      margin: 0;
+      font-weight: 500;
+    }
+
+    /* Apply Button */
+    .apply-btn {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border: none;
+      color: white;
+      padding: 15px 40px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+      margin-top: 20px;
+    }
+
+    .apply-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
+      background: linear-gradient(135deg, #5a6fd8, #6c5ce7);
+    }
+
+    /* Breakdown Chart */
+    .breakdown-chart {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      margin-top: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .chart-container {
+      position: relative;
+      height: 300px;
+      width: 100%;
+      max-width: 400px;
+      margin: 20px auto;
+    }
+
+    .breakdown-summary {
+      margin-top: 30px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 10px;
+    }
+
+    .breakdown-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    .breakdown-item:last-child {
+      border-bottom: none;
+      font-weight: 600;
+      color: #667eea;
+    }
+
+    /* Eligibility Alert */
+    .eligibility-alert {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 10px;
+      font-weight: 500;
+    }
+
+    .alert-success {
+      background: #d1edff;
+      border: 1px solid #667eea;
+      color: #0d47a1;
+    }
+
+    .alert-warning {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      color: #856404;
+    }
+
+    .alert-danger {
+      background: #f8d7da;
+      border: 1px solid #dc3545;
+      color: #721c24;
+    }
+
+    /* Footer */
+    footer {
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      color: white;
+      padding: 30px 0;
+      margin-top: 50px;
+      box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Animations */
+    @keyframes slideInUp {
+      from {
+        transform: translateY(50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        transform: translateY(30px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .page-header h1 {
+        font-size: 2.5rem;
+      }
+      
+      .calculator-container {
+        padding: 20px;
+        margin: 20px 10px;
+      }
+      
+      .vehicle-types {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .vehicle-card {
+        min-width: 200px;
+      }
+      
+      .results-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .chart-container {
+        height: 250px;
+        max-width: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Animated background particles -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="index.html">
+            <i class="fas fa-car me-2"></i>VehicleLoan Pro
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown">
+                        Calculators
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="emi-calculator.html">EMI Calculator</a></li>
+                        <li><a class="dropdown-item" href="eligibility-calculator.html">Eligibility Calculator</a></li>
+                        <li><a class="dropdown-item active" href="loan-calculator.html">Loan Amount Calculator</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html#faq">FAQ</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html#contact">Contact</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="login.html">
+                        <i class="fas fa-sign-in-alt me-1"></i>Login
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="signup.html">
+                        <i class="fas fa-user-plus me-1"></i>Sign Up
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="container">
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1><i class="fas fa-calculator me-3"></i>Loan Amount Calculator</h1>
+        <p>Calculate the maximum loan amount you can get based on your monthly income and preferred EMI</p>
+      </div>
+
+      <!-- Calculator Container -->
+      <div class="calculator-container">
+        <!-- Vehicle Type Selection -->
+        <div class="calculator-section">
+          <h3 class="section-title">
+            <i class="fas fa-car"></i>
+            Select Vehicle Type
+          </h3>
+          <div class="vehicle-types">
+            <div class="vehicle-card active" data-vehicle="car">
+              <i class="fas fa-car"></i>
+              <h5>Car</h5>
+            </div>
+            <div class="vehicle-card" data-vehicle="bike">
+              <i class="fas fa-motorcycle"></i>
+              <h5>Bike</h5>
+            </div>
+            <div class="vehicle-card" data-vehicle="scooter">
+              <i class="fas fa-bicycle"></i>
+              <h5>Scooter</h5>
+            </div>
+          </div>
+        </div>
+
+        <!-- Input Details -->
+        <div class="row">
+          <div class="col-md-6">
+            <div class="calculator-section">
+              <h4 class="section-title">
+                <i class="fas fa-wallet"></i>
+                Monthly Income
+              </h4>
+              <div class="slider-container">
+                <div class="slider-wrapper">
+                  <div class="slider-value" id="monthlyIncomeValue">₹50,000</div>
+                  <input type="range" class="form-range" id="monthlyIncome" min="20000" max="200000" step="5000" value="50000">
+                </div>
+                <div class="slider-labels">
+                  <span>₹20K</span>
+                  <span>₹2L</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="calculator-section">
+              <h4 class="section-title">
+                <i class="fas fa-credit-card"></i>
+                Preferred EMI
+              </h4>
+              <div class="slider-container">
+                <div class="slider-wrapper">
+                  <div class="slider-value" id="preferredEMIValue">₹15,000</div>
+                  <input type="range" class="form-range" id="preferredEMI" min="5000" max="50000" step="1000" value="15000">
+                </div>
+                <div class="slider-labels">
+                  <span>₹5K</span>
+                  <span>₹50K</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="calculator-section">
+              <h4 class="section-title">
+                <i class="fas fa-percentage"></i>
+                Interest Rate
+              </h4>
+              <div class="slider-container">
+                <div class="slider-wrapper">
+                  <div class="slider-value" id="interestRateValue">10.5%</div>
+                  <input type="range" class="form-range" id="interestRate" min="7" max="20" step="0.1" value="10.5">
+                </div>
+                <div class="slider-labels">
+                  <span>7%</span>
+                  <span>20%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="calculator-section">
+              <h4 class="section-title">
+                <i class="fas fa-calendar-alt"></i>
+                Loan Tenure
+              </h4>
+              <div class="slider-container">
+                <div class="slider-wrapper">
+                  <div class="slider-value" id="tenureValue">36 months</div>
+                  <input type="range" class="form-range" id="tenure" min="12" max="84" step="6" value="36">
+                </div>
+                <div class="slider-labels">
+                  <span>12 months</span>
+                  <span>84 months</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-container">
+          <h3 class="section-title">
+            <i class="fas fa-chart-line"></i>
+            Loan Amount Results
+          </h3>
+          
+          <div class="results-grid">
+            <div class="result-card">
+              <div class="icon">
+                <i class="fas fa-rupee-sign"></i>
+              </div>
+              <h4 id="maxLoanAmount">₹4,69,231</h4>
+              <p>Maximum Loan Amount</p>
+            </div>
+            
+            <div class="result-card">
+              <div class="icon">
+                <i class="fas fa-coins"></i>
+              </div>
+              <h4 id="totalInterest">₹71,077</h4>
+              <p>Total Interest Payable</p>
+            </div>
+            
+            <div class="result-card">
+              <div class="icon">
+                <i class="fas fa-money-bill-wave"></i>
+              </div>
+              <h4 id="totalAmount">₹5,40,000</h4>
+              <p>Total Amount Payable</p>
+            </div>
+          </div>
+
+          <!-- EMI to Income Ratio -->
+          <div class="row mt-4">
+            <div class="col-md-6">
+              <div class="result-card">
+                <div class="icon">
+                  <i class="fas fa-chart-pie"></i>
+                </div>
+                <h4 id="emiRatio">30.0%</h4>
+                <p>EMI to Income Ratio</p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="result-card">
+                <div class="icon">
+                  <i class="fas fa-hand-holding-usd"></i>
+                </div>
+                <h4 id="remainingIncome">₹35,000</h4>
+                <p>Remaining Monthly Income</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Eligibility Alert -->
+          <div id="eligibilityAlert" class="eligibility-alert alert-success">
+            <i class="fas fa-check-circle me-2"></i>
+            <span id="eligibilityMessage">Good! Your EMI to income ratio is within acceptable limits.</span>
+          </div>
+
+          <!-- Breakdown Chart -->
+          <div class="breakdown-chart">
+            <h4 class="section-title">
+              <i class="fas fa-chart-pie"></i>
+              Payment Breakdown
+            </h4>
+            <div class="chart-container">
+              <canvas id="loanChart"></canvas>
+            </div>
+            <div class="breakdown-summary">
+              <div class="breakdown-item">
+                <span><i class="fas fa-circle" style="color: #667eea;"></i> Principal Amount:</span>
+                <span id="principalBreakdown">₹4,69,231</span>
+              </div>
+              <div class="breakdown-item">
+                <span><i class="fas fa-circle" style="color: #f1c40f;"></i> Interest Amount:</span>
+                <span id="interestBreakdown">₹70,769</span>
+              </div>
+              <div class="breakdown-item">
+                <span><strong>Total Amount:</strong></span>
+                <span id="totalBreakdown"><strong>₹5,40,000</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Apply Button -->
+          <div class="text-center">
+            <button class="apply-btn" onclick="applyForLoan()">
+              <i class="fas fa-paper-plane me-2"></i>Apply for Loan
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <p>&copy; 2025 VehicleLoan Pro. All rights reserved.</p>
+            </div>
+            <div class="col-lg-6 text-end">
+                <a href="#" class="text-white me-3">Privacy Policy</a>
+                <a href="#" class="text-white me-3">Terms & Conditions</a>
+                <a href="#" class="text-white">Disclaimer</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Global variables
+    let currentVehicleType = 'car';
+    let chart;
+
+    // Create animated particles
+    function createParticles() {
+      const particles = document.getElementById('particles');
+      const particleCount = 30;
+
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 6 + 's';
+        particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+        particles.appendChild(particle);
+      }
+    }
+
+    // Vehicle type selection
+    document.querySelectorAll('.vehicle-card').forEach(card => {
+      card.addEventListener('click', function() {
+        document.querySelectorAll('.vehicle-card').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+        
+        // Update interest rates based on vehicle type
+        currentVehicleType = this.getAttribute('data-vehicle');
+        const interestSlider = document.getElementById('interestRate');
+        
+        switch(currentVehicleType) {
+          case 'car':
+            interestSlider.min = 7;
+            interestSlider.max = 15;
+            interestSlider.value = 10.5;
+            break;
+          case 'bike':
+            interestSlider.min = 9;
+            interestSlider.max = 18;
+            interestSlider.value = 12;
+            break;
+          case 'scooter':
+            interestSlider.min = 9;
+            interestSlider.max = 18;
+            interestSlider.value = 12;
+            break;
+        }
+        
+        updateSliderValues();
+        calculateLoanAmount();
+      });
+    });
+
+    // Slider value updates
+    function updateSliderValues() {
+      const monthlyIncome = document.getElementById('monthlyIncome').value;
+      const preferredEMI = document.getElementById('preferredEMI').value;
+      const interestRate = document.getElementById('interestRate').value;
+      const tenure = document.getElementById('tenure').value;
+
+      document.getElementById('monthlyIncomeValue').textContent = '₹' + formatNumber(monthlyIncome);
+      document.getElementById('preferredEMIValue').textContent = '₹' + formatNumber(preferredEMI);
+      document.getElementById('interestRateValue').textContent = parseFloat(interestRate).toFixed(1) + '%';
+      document.getElementById('tenureValue').textContent = tenure + ' months';
+
+      // Update preferred EMI max based on income (max 50% of income)
+      const maxEMI = Math.min(monthlyIncome * 0.5, 50000);
+      const emiSlider = document.getElementById('preferredEMI');
+      emiSlider.max = maxEMI;
+      
+      if (parseFloat(preferredEMI) > maxEMI) {
+        emiSlider.value = maxEMI;
+        document.getElementById('preferredEMIValue').textContent = '₹' + formatNumber(maxEMI);
+      }
+
+      // Update slider labels for EMI
+      const emiLabels = emiSlider.parentElement.nextElementSibling;
+      emiLabels.innerHTML = `<span>₹5K</span><span>₹${Math.round(maxEMI/1000)}K</span>`;
+    }
+
+    // Format number with commas
+    function formatNumber(num) {
+      return parseFloat(num).toLocaleString('en-IN');
+    }
+
+    // Calculate loan amount
+    function calculateLoanAmount() {
+      const income = parseFloat(document.getElementById('monthlyIncome').value);
+      const emi = parseFloat(document.getElementById('preferredEMI').value);
+      const rate = parseFloat(document.getElementById('interestRate').value);
+      const tenure = parseInt(document.getElementById('tenure').value);
+
+      const monthlyRate = rate / 12 / 100;
+      const factor = (Math.pow(1 + monthlyRate, tenure) - 1) / (monthlyRate * Math.pow(1 + monthlyRate, tenure));
+      const loanAmount = emi * factor;
+
+      const totalAmount = emi * tenure;
+      const interest = totalAmount - loanAmount;
+      const emiRatio = (emi / income) * 100;
+      const remainingIncome = income - emi;
+
+      document.getElementById('maxLoanAmount').textContent = '₹' + formatNumber(loanAmount.toFixed(0));
+      document.getElementById('totalInterest').textContent = '₹' + formatNumber(interest.toFixed(0));
+      document.getElementById('totalAmount').textContent = '₹' + formatNumber(totalAmount.toFixed(0));
+      document.getElementById('emiRatio').textContent = emiRatio.toFixed(1) + '%';
+      document.getElementById('remainingIncome').textContent = '₹' + formatNumber(remainingIncome.toFixed(0));
+
+      document.getElementById('principalBreakdown').textContent = '₹' + formatNumber(loanAmount.toFixed(0));
+      document.getElementById('interestBreakdown').textContent = '₹' + formatNumber(interest.toFixed(0));
+      document.getElementById('totalBreakdown').textContent = '₹' + formatNumber(totalAmount.toFixed(0));
+
+      const alertBox = document.getElementById('eligibilityAlert');
+      const alertMsg = document.getElementById('eligibilityMessage');
+
+      if (emiRatio <= 40) {
+        alertBox.className = 'eligibility-alert alert-success';
+        alertMsg.textContent = 'Good! Your EMI to income ratio is within acceptable limits.';
+      } else if (emiRatio <= 50) {
+        alertBox.className = 'eligibility-alert alert-warning';
+        alertMsg.textContent = 'Caution! Your EMI to income ratio is slightly high.';
+      } else {
+        alertBox.className = 'eligibility-alert alert-danger';
+        alertMsg.textContent = 'Warning! Your EMI to income ratio is too high.';
+      }
+
+      updateChart(loanAmount, interest);
+    }
+
+    // Chart setup
+    function updateChart(principal, interest) {
+      const ctx = document.getElementById('loanChart').getContext('2d');
+
+      if (chart) {
+        chart.destroy();
+      }
+
+      chart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Principal', 'Interest'],
+          datasets: [{
+            data: [principal, interest],
+            backgroundColor: ['#667eea', '#f1c40f'],
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          },
+          cutout: '70%'
+        }
+      });
+    }
+
+    // Apply button action (can be customized)
+    function applyForLoan() {
+      alert("Redirecting to loan application form...");
+      // window.location.href = 'loan-application.html';
+    }
+
+    // Event Listeners
+    document.querySelectorAll('.form-range').forEach(slider => {
+      slider.addEventListener('input', () => {
+        updateSliderValues();
+        calculateLoanAmount();
+      });
+    });
+
+    // On load
+    createParticles();
+    updateSliderValues();
+    calculateLoanAmount();
+  </script>
+</body>
+</html>

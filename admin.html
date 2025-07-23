@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - AutoLoanPro</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    /* Enhanced CSS with animations and modern styling */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* Animated background particles */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+    }
+
+    /* Enhanced Navbar */
+    .navbar {
+      background: rgba(255, 255, 255, 0.95) !important;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .navbar-brand {
+      font-weight: bold;
+      font-size: 1.6rem;
+      color: #667eea !important;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-nav .nav-link {
+      color: #333 !important;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .navbar-nav .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: #667eea;
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    .navbar-nav .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .navbar-nav .nav-link:hover {
+      color: #667eea !important;
+      transform: translateY(-2px);
+    }
+
+    /* Admin Header */
+    .admin-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 100px 0 60px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .admin-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="rgba(255,255,255,0.1)"><polygon points="0,0 1000,100 1000,0"/></svg>');
+      background-size: 100% 100%;
+      z-index: 1;
+    }
+
+    .admin-header-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .admin-header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .admin-header p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+
+    .admin-badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 8px 20px;
+      border-radius: 25px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-top: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    /* Admin Content */
+    .admin-content {
+      padding: 40px 0;
+    }
+
+    .admin-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .admin-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .card-header h3 {
+      color: #667eea;
+      font-weight: 700;
+      margin: 0;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .card-header i {
+      font-size: 1.8rem;
+      color: #667eea;
+      margin-right: 15px;
+    }
+
+    .card-header-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-sm-custom {
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      border-radius: 20px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    /* Statistics Cards */
+    .stat-card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      border-left: 4px solid #667eea;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+    }
+
+    .stat-card .stat-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
+      font-size: 1.5rem;
+      color: white;
+    }
+
+    .stat-card h3 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+      color: #333;
+    }
+
+    .stat-card p {
+      color: #666;
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    .stat-card .stat-change {
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
+    .stat-change.positive {
+      color: #28a745;
+    }
+
+    .stat-change.negative {
+      color: #dc3545;
+    }
+
+    /* Data Table */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .data-table th {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 15px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .data-table td {
+      padding: 15px;
+      border-bottom: 1px solid #f0f0f0;
+      transition: all 0.3s ease;
+    }
+
+    .data-table tr:hover {
+      background: #f8f9fa;
+      transform: scale(1.01);
+    }
+
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Status Badges */
+    .status-badge {
+      padding: 6px 12px;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: inline-block;
+    }
+
+    .status-approved {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .status-pending {
+      background: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffeaa7;
+    }
+
+    .status-processing {
+      background: #cce5ff;
+      color: #004085;
+      border: 1px solid #b3d9ff;
+    }
+
+    .status-rejected {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    /* Action Buttons */
+    .action-btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 0 2px;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-approve {
+      background: #28a745;
+      color: white;
+    }
+
+    .btn-reject {
+      background: #dc3545;
+      color: white;
+    }
+
+    .btn-view {
+      background: #007bff;
+      color: white;
+    }
+
+    .btn-edit {
+      background: #ffc107;
+      color: #333;
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .quick-action-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 25px 20px;
+      background: white;
+      border-radius: 15px;
+      text-decoration: none;
+      color: #333;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+
+    .quick-action-btn:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      border-color: #667eea;
+      color: #667eea;
+    }
+
+    .quick-action-btn i {
+      font-size: 2rem;
+      margin-bottom: 12px;
+      color: #667eea;
+    }
+
+    .quick-action-btn h5 {
+      font-weight: 600;
+      margin: 0;
+      text-align: center;
+      font-size: 1rem;
+    }
+
+    /* Chart Container */
+    .chart-container {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      font-style: italic;
+    }
+
+    /* Recent Activity */
+    .activity-item {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+      background: white;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      border-left: 4px solid #667eea;
+      transition: all 0.3s ease;
+    }
+
+    .activity-item:hover {
+      transform: translateX(5px);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .activity-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      margin-right: 15px;
+      font-size: 1rem;
+    }
+
+    .activity-content {
+      flex: 1;
+    }
+
+    .activity-content h6 {
+      color: #333;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .activity-content p {
+      color: #666;
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    .activity-time {
+      color: #999;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    /* Search and Filter */
+    .search-filter-section {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .search-filter-section .form-control {
+      border-radius: 25px;
+      border: 2px solid #e9ecef;
+      padding: 10px 20px;
+      transition: all 0.3s ease;
+    }
+
+    .search-filter-section .form-control:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+
+    .search-filter-section .btn {
+      border-radius: 25px;
+      padding: 10px 25px;
+      font-weight: 600;
+    }
+
+    /* Footer */
+    footer {
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      color: white;
+      padding: 30px 0;
+      margin-top: 50px;
+      box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .admin-header h1 {
+        font-size: 2rem;
+      }
+      
+      .admin-card {
+        padding: 20px;
+      }
+      
+      .quick-actions {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      }
+      
+      .data-table {
+        font-size: 0.8rem;
+      }
+      
+      .data-table th,
+      .data-table td {
+        padding: 10px;
+      }
+    }
+
+    /* Animations */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.8s ease forwards;
+    }
+
+    .fade-in:nth-child(1) { animation-delay: 0.1s; }
+    .fade-in:nth-child(2) { animation-delay: 0.2s; }
+    .fade-in:nth-child(3) { animation-delay: 0.3s; }
+    .fade-in:nth-child(4) { animation-delay: 0.4s; }
+    .fade-in:nth-child(5) { animation-delay: 0.5s; }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Logout Button */
+    .logout-btn {
+      background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+      border: none;
+      color: white;
+      padding: 8px 20px;
+      border-radius: 25px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+    }
+
+    .logout-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <!-- Animated background particles -->
+  <div class="particles" id="particles"></div>
+
+  <nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="index.html">
+            <i class="fas fa-car me-2"></i>VehicleLoan Pro
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="admin.html">Admin Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#applications">Applications</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <span class="nav-link">
+                        <i class="fas fa-user-shield me-1"></i>Admin Panel
+                    </span>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link logout-btn" href="login.html">
+                        <i class="fas fa-sign-out-alt me-1"></i>Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+  <!-- Admin Header -->
+  <div class="admin-header">
+    <div class="admin-header-content">
+      <h1>Admin Dashboard</h1>
+      <p>Manage loans, users, and system operations</p>
+      <div class="admin-badge">
+        <i class="fas fa-shield-alt me-2"></i>Super Administrator
+      </div>
+    </div>
+  </div>
+    <!-- Admin Content -->
+    <div class="container admin-content">
+      <!-- Statistics Row -->
+      <div class="row mb-4">
+        <div class="col-md-3 fade-in">
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-users"></i></div>
+            <h3 id="totalUsers">--</h3>
+            <p>Total Users</p>
+            <div class="stat-change positive">
+              <i class="fas fa-arrow-up"></i> +12.5% from last month
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-3 fade-in">
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
+            <h3 id="totalApplications">--</h3>
+            <p>Total Applications</p>
+            <div class="stat-change positive">
+              <i class="fas fa-arrow-up"></i> +8.3% from last month
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-3 fade-in">
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+            <h3 id="approvedLoans">--</h3>
+            <p>Approved Loans</p>
+            <div class="stat-change positive">
+              <i class="fas fa-arrow-up"></i> +15.2% from last month
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-3 fade-in">
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-rupee-sign"></i></div>
+            <h3 id="totalDisbursed">--</h3>
+            <p>Total Disbursed</p>
+            <div class="stat-change positive">
+              <i class="fas fa-arrow-up"></i> +22.1% from last month
+            </div>
+          </div>
+        </div>
+        
+      </div>
+  
+
+    <!-- Quick Actions -->
+    <!-- <div class="row">
+      <div class="col-12 fade-in">
+        <div class="admin-card">
+          <div class="card-header">
+            <h3><i class="fas fa-bolt"></i>Quick Actions</h3>
+          </div>
+          <div class="quick-actions">
+            <a href="#" class="quick-action-btn">
+              <i class="fas fa-plus-circle"></i>
+              <h5>Add New User</h5>
+            </a>
+            <a href="#" class="quick-action-btn">
+              <i class="fas fa-eye"></i>
+              <h5>Review Applications</h5>
+            </a>
+            <a href="#" class="quick-action-btn">
+              <i class="fas fa-chart-bar"></i>
+              <h5>Generate Report</h5>
+            </a>
+            <a href="#" class="quick-action-btn">
+              <i class="fas fa-cog"></i>
+              <h5>System Settings</h5>
+            </a>
+            <a href="#" class="quick-action-btn">
+              <i class="fas fa-bell"></i>
+              <h5>Send Notifications</h5>
+            </a>
+            <a href="#" class="quick-action-btn">
+              <i class="fas fa-download"></i>
+              <h5>Export Data</h5>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+    <!-- Pending Applications -->
+    <div class="row">
+      <div class="col-12 fade-in">
+        <div class="admin-card" id="applications">
+          <div class="card-header">
+            <h3><i class="fas fa-clock"></i>Pending Applications</h3>
+            <div class="card-header-actions">
+<button class="btn btn-primary btn-sm-custom" id="exportPdfBtn">
+  <i class="fas fa-download me-1"></i>Export
+</button>
+            </div>
+          </div>
+          <div class="search-filter-section">
+            <div class="row">
+              <div class="col-md-4">
+                <input type="text" class="form-control" placeholder="Search applications...">
+              </div>
+              <div class="col-md-3">
+                <select class="form-control">
+                  <option>All Status</option>
+                  <option>Submitted</option>
+                  <option>Approved</option>
+                  <option>Rejected</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+<select class="form-control" id="loanTypeFilter">
+  <option value="all">All Loan Types</option>
+  <option value="car">Car Loan</option>
+  <option value="bike">Bike Loan</option>
+  <option value="scooter">Scooter</option>
+</select>
+              </div>
+              <div class="col-md-2">
+                <button class="btn btn-primary w-100">
+                  <i class="fas fa-search me-1"></i>Search
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table" id="applicationsTable">
+              <thead>
+                <tr>
+                  <th>Application ID</th>
+                  <th>Customer Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Employment Type</th>
+                  <th>Aadhar No</th>
+                  <th>Vehicle Loan Type</th>
+                  <th>Monthly Income</th>
+                  <th>Loan Amount</th>
+                  <th>Salary Slip</th>
+                  <th>Status</th>
+                  <th>Admin Verified</th>
+                  <th>Bank Account No</th>
+                  <th>Approve/Reject</th>
+                </tr>
+
+              </thead>
+              <tbody>
+                <!-- Fetched data will populate here -->
+              </tbody>
+            </table>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container text-center py-4">
+      <p class="mb-0">&copy; 2025 VehicleLoan Pro. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Particle Animation & Bootstrap JS -->
+  <!-- Add this inside your existing <body> just before the closing </body> tag -->
+
+ <script>
+  let allApplications = [];
+
+  // Fetch applications on load
+  document.addEventListener('DOMContentLoaded', () => {
+    fetch('http://localhost:8081/application-status/all')
+      .then(response => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return response.json();
+      })
+      .then(applications => {
+        allApplications = applications;
+        applyFilters(); // Render filtered initially (no filters active = show all)
+      })
+      .catch(err => {
+        console.error('Error loading applications:', err);
+        document.querySelector('#applicationsTable tbody').innerHTML =
+          '<tr><td colspan="14" class="text-center text-danger">Failed to load data.</td></tr>';
+      });
+  });
+
+  function renderTable(data) {
+    const tbody = document.querySelector('#applicationsTable tbody');
+    tbody.innerHTML = '';
+
+    if (data.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="14" class="text-center">No matching applications found.</td></tr>';
+      return;
+    }
+
+    data.forEach(app => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${app.applicationId}</td>
+        <td>${app.customerName}</td>
+        <td>${app.email}</td>
+        <td>${app.phone}</td>
+        <td>${app.employmentType || '-'}</td>
+        <td>${app.aadharNo}</td>
+        <td>${app.vehicleType || '-'}</td>
+        <td>₹${app.monthlyIncome ? app.monthlyIncome.toLocaleString('en-IN') : '-'}</td>
+        <td>₹${app.loanAmount ? app.loanAmount.toLocaleString('en-IN') : '-'}</td>
+        <td>${app.salarySlip || '-'}</td>
+        <td>${app.applicationStatus}</td>
+        <td>${app.adminVerified}</td>
+        <td>${app.bankAccountNo}</td>
+        <td>
+          <button class="btn btn-success btn-sm approve-btn" data-id="${app.applicationId}">Approve</button>
+          <button class="btn btn-danger btn-sm reject-btn" data-id="${app.applicationId}">Reject</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function applyFilters() {
+    const searchText = document.querySelector('input[type="text"]').value.toLowerCase();
+    const selectedStatus = document.querySelectorAll('select')[0].value;
+    const selectedLoanType = document.querySelectorAll('select')[1].value;
+
+    const filtered = allApplications.filter(app => {
+      const matchesSearch =
+        app.customerName.toLowerCase().includes(searchText) ||
+        app.email.toLowerCase().includes(searchText) ||
+        app.phone.toLowerCase().includes(searchText) ||
+        String(app.applicationId).includes(searchText);
+
+      const matchesStatus =
+        selectedStatus === 'All Status' || app.applicationStatus === selectedStatus;
+
+      const matchesLoanType =
+        selectedLoanType === 'all' ||
+        (app.vehicleType &&
+         app.vehicleType.toLowerCase().includes(selectedLoanType));
+
+      return matchesSearch && matchesStatus && matchesLoanType;
+    });
+
+    renderTable(filtered);
+  }
+
+  // Filter binding
+  document.querySelector('.btn-primary.w-100').addEventListener('click', applyFilters);
+  document.querySelectorAll('select').forEach(select => {
+    select.addEventListener('change', applyFilters);
+  });
+  document.querySelector('input[type="text"]').addEventListener('input', applyFilters);
+
+  // Approve/Reject actions
+  document.querySelector('#applicationsTable tbody').addEventListener('click', e => {
+    if (e.target.classList.contains('approve-btn')) {
+      const id = e.target.getAttribute('data-id');
+      fetch(`http://localhost:8081/application-status/approve/${id}`, { method: 'PUT' })
+        .then(response => {
+          if (response.ok) location.reload();
+          else alert("Failed to approve application");
+        })
+        .catch(console.error);
+    }
+    if (e.target.classList.contains('reject-btn')) {
+      const id = e.target.getAttribute('data-id');
+      fetch(`http://localhost:8081/application-status/reject/${id}`, { method: 'PUT' })
+        .then(response => {
+          if (response.ok) location.reload();
+          else alert("Failed to reject application");
+        })
+        .catch(console.error);
+    }
+  });
+</script>
+
+<!-- jsPDF & AutoTable -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+<script>
+  document.getElementById('exportPdfBtn').addEventListener('click', () => {
+    if (confirm('Do you want to export the filtered applications as PDF?')) {
+      exportFilteredToPDF();
+    }
+  });
+
+  function exportFilteredToPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    doc.setFontSize(16);
+    doc.text("Filtered Loan Applications", 14, 20);
+
+    const headers = [[
+      "Application ID", "Customer Name", "Email", "Phone", "Employment",
+      "Aadhar No", "Vehicle Type", "Monthly Income", "Loan Amount", "Status"
+    ]];
+
+    const data = Array.from(document.querySelectorAll("#applicationsTable tbody tr"))
+      .filter(row => row.querySelectorAll('td').length > 1)
+      .map(row => {
+        const cells = row.querySelectorAll("td");
+        return [
+          cells[0]?.innerText || "",
+          cells[1]?.innerText || "",
+          cells[2]?.innerText || "",
+          cells[3]?.innerText || "",
+          cells[4]?.innerText || "",
+          cells[5]?.innerText || "",
+          cells[6]?.innerText || "",
+          cells[7]?.innerText || "",
+          cells[8]?.innerText || "",
+          cells[10]?.innerText || ""  // Status
+        ];
+      });
+
+    doc.autoTable({
+      head: headers,
+      body: data,
+      startY: 30,
+      styles: { fontSize: 9, cellPadding: 3 },
+      headStyles: { fillColor: [22, 160, 133] },
+    });
+
+    doc.save("filtered-applications.pdf");
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    fetch('http://localhost:8081/application-status/stats')
+      .then(response => response.json())
+      .then(stats => {
+        document.getElementById('totalUsers').innerText = stats.totalUsers.toLocaleString();
+        document.getElementById('totalApplications').innerText = stats.totalApplications.toLocaleString();
+        document.getElementById('approvedLoans').innerText = stats.approvedLoans.toLocaleString();
+        document.getElementById('totalDisbursed').innerText = `₹${(stats.totalDisbursed / 100000).toFixed(2)}Lakhs`;
+      })
+      .catch(err => {
+        console.error("Failed to load dashboard stats:", err);
+      });
+  });
+</script>
+
+
+  
+
+  <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
+</body>
+</html>

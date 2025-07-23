@@ -1,0 +1,158 @@
+/* style.css - Shared Styling for AutoLoanPro */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f8fb;
+    color: #333;
+  }
+  
+  .navbar-brand {
+    font-weight: bold;
+    font-size: 1.6rem;
+  }
+  
+  .hero {
+    background: linear-gradient(135deg, #004aad, #0d6efd);
+    color: white;
+    text-align: center;
+    padding: 60px 20px;
+  }
+  
+  .section-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #0d6efd;
+  }
+  
+  .form-section {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  }
+  
+  footer {
+    background-color: #0d6efd;
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+    margin-top: 50px;
+  }
+  
+  .btn-primary, .btn-success {
+    font-weight: 500;
+    border-radius: 8px;
+  }
+  
+  input[type="range"] {
+    width: 100%;
+  }
+  
+  .slider-value {
+    font-weight: bold;
+    color: #0d6efd;
+  }
+  
+  /* Features Section */
+  .features {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    margin-top: 40px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    gap: 20px;
+  }
+  .feature-box {
+    text-align: center;
+    padding: 15px;
+    max-width: 200px;
+  }
+  .feature-box img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: 10px;
+  }
+  .feature-box h5 {
+    font-weight: bold;
+    color: #111;
+    margin: 10px 0 5px;
+  }
+  .feature-box p {
+    font-size: 0.9rem;
+    color: #555;
+  }
+  
+  /* Testimonials */
+  .testimonials {
+    background: #fff;
+    padding: 40px 20px;
+    border-radius: 10px;
+    margin: 40px 0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  }
+  .testimonials h3 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: bold;
+  }
+  .testimonial {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .testimonial h6 {
+    color: #004aad;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  .testimonial p {
+    font-style: italic;
+    margin: 10px 0;
+  }
+  .stars {
+    color: gold;
+    font-size: 1.1rem;
+  }
+  
+  /* FAQs */
+  .faq-section {
+    margin: 40px auto;
+    max-width: 900px;
+  }
+  .faq-section h4 {
+    color: #0d6efd;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  .faq-item {
+    background: #fff;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    padding: 15px 20px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.05);
+  }
+  
+  /* Contact */
+  .contact-section {
+    padding: 40px 20px;
+    background: #fff;
+    margin-top: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  }
+  .contact-section h4 {
+    color: #0d6efd;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  .contact-section p {
+    margin-bottom: 10px;
+  }
+  
