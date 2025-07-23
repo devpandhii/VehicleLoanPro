@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pay EMI - VehicleLoan Pro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- Bootstrap + FontAwesome -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+  <!-- Inline Styling -->
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Animated background */
+    .particles {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .navbar {
+      background: rgba(255, 255, 255, 0.95) !important;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-brand {
+      font-weight: bold;
+      font-size: 1.6rem;
+      color: #667eea !important;
+    }
+
+    .navbar-nav .nav-link {
+      color: #333 !important;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .navbar-nav .nav-link:hover {
+      color: #667eea !important;
+      transform: translateY(-2px);
+    }
+
+    .dashboard-header {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      text-align: center;
+      padding: 80px 0 40px;
+    }
+
+    .dashboard-header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+    }
+
+    .dashboard-header p {
+      font-size: 1.2rem;
+      opacity: 0.95;
+    }
+
+    .dashboard-content {
+      padding: 40px 15px;
+    }
+
+    .dashboard-card {
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(8px);
+      border-radius: 15px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 10px;
+    }
+
+    .card-header h3 {
+      color: #667eea;
+      font-weight: 700;
+      font-size: 1.4rem;
+    }
+
+    .card-header i {
+      font-size: 1.5rem;
+      color: #667eea;
+      margin-right: 10px;
+    }
+
+    .btn-success {
+      background: linear-gradient(to right, #667eea, #764ba2);
+      border: none;
+      color: #fff;
+      font-weight: 600;
+      padding: 10px 28px;
+      border-radius: 99px;
+    }
+
+    .btn-success:hover {
+      background: linear-gradient(to right, #764ba2, #667eea);
+    }
+
+    .list-group-item {
+      background: transparent;
+      border: none;
+      font-size: 0.95rem;
+    }
+
+    .alert {
+      border-radius: 10px;
+      font-size: 0.95rem;
+    }
+
+    .footer {
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      color: white;
+      padding: 30px 0 20px;
+    }
+
+    .footer a {
+      color: white;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-header h1 {
+        font-size: 1.8rem;
+      }
+
+      .dashboard-card {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="particles" id="particles"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">
+        <i class="fas fa-car me-2"></i>VehicleLoan Pro
+      </a>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <div class="dashboard-header">
+    <h1>Make Your EMI Payment</h1>
+    <p>Secure and simple payment for your vehicle loan</p>
+  </div>
+
+  <!-- Content -->
+  <div class="container dashboard-content">
+    <div class="dashboard-card">
+      <div class="card-header">
+        <i class="fas fa-file-invoice-dollar"></i>
+        <h3>EMI Summary</h3>
+      </div>
+      <p><strong>Application ID:</strong> <span id="appId">-</span></p>
+      <p><strong>Loan Amount:</strong> ₹<span id="loanAmount">-</span></p>
+      <p><strong>Monthly EMI:</strong> ₹<span id="emi">-</span></p>
+      <p><strong>Tenure:</strong> <span id="tenure">-</span> months</p>
+      <p><strong>EMIs Paid:</strong> <span id="emisPaid">0</span></p>
+
+      <button class="btn btn-success mt-3" id="payBtn">
+        💳 Pay EMI #<span id="nextEmi">1</span>
+      </button>
+
+      <div id="paymentMsg" class="mt-3 alert alert-info" style="display:none;"></div>
+    </div>
+
+    <div class="dashboard-card">
+      <div class="card-header">
+        <i class="fas fa-history"></i>
+        <h3>Previous Payments</h3>
+      </div>
+      <ul id="paymentList" class="list-group list-group-flush">
+        <li class="list-group-item text-muted">Loading history...</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer text-center">
+    <div class="container">
+      <p>&copy; 2025 VehicleLoan Pro. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const appId = params.get("applicationId");
+    const loanAmount = parseFloat(params.get("amount") || 0);
+    const rate = parseFloat(params.get("rate") || 8.5);
+    const tenure = parseInt(params.get("tenure") || 0);
+    const emi = calculateEMI(loanAmount, rate, tenure);
+
+    document.getElementById("appId").textContent = appId;
+    document.getElementById("loanAmount").textContent = loanAmount.toLocaleString("en-IN");
+    document.getElementById("emi").textContent = emi.toLocaleString("en-IN");
+    document.getElementById("tenure").textContent = tenure;
+
+    let emisPaid = 0;
+
+    fetch(`http://localhost:8084/loan-payments/application/${appId}`)
+      .then(res => res.json())
+      .then(data => {
+        emisPaid = data.length;
+        document.getElementById("emisPaid").textContent = emisPaid;
+        document.getElementById("nextEmi").textContent = emisPaid + 1;
+
+        const list = data.map(p => `
+          <li class="list-group-item">
+            ✅ ₹${p.amountPaid} paid for Month ${p.monthPaid} on ${new Date(p.paymentDate).toLocaleDateString()}
+          </li>
+        `).join("");
+        document.getElementById("paymentList").innerHTML = list || "<li class='list-group-item'>No payments yet.</li>";
+      });
+
+    document.getElementById("payBtn").addEventListener("click", () => {
+      if (emisPaid >= tenure) {
+        return showMessage("🎉 All EMIs paid!", "success");
+      }
+
+      const month = emisPaid + 1;
+
+      fetch("http://localhost:8084/loan-payments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          applicationId: appId,
+          amountPaid: emi,
+          monthPaid: month
+        })
+      })
+      .then(res => res.text())
+      .then(msg => {
+        showMessage("✅ " + msg, "success");
+        setTimeout(() => location.reload(), 800);
+      })
+      .catch(() => {
+        showMessage("❌ Payment failed. Try again.", "danger");
+      });
+    });
+
+    function calculateEMI(P, R, N) {
+      const r = R / (12 * 100);
+      return Math.round(P * r * Math.pow(1 + r, N) / (Math.pow(1 + r, N) - 1));
+    }
+
+    function showMessage(msg, type) {
+      const el = document.getElementById("paymentMsg");
+      el.innerText = msg;
+      el.className = `alert alert-${type}`;
+      el.style.display = "block";
+    }
+  </script>
+</body>
+</html>

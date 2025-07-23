@@ -799,6 +799,9 @@ document.addEventListener('DOMContentLoaded', () => {
               <p><strong>Loan Amount:</strong> ₹${app.loanAmount?.toLocaleString('en-IN') || '-'}</p>
               <p><strong>Applied Date:</strong> ${appliedDate}</p>
               <p><strong>EMI:</strong> ${emiString}</p>
+              <p><a class="btn btn-sm btn-outline-success mt-2" href="emi-payment.html?applicationId=${app.applicationId}&tenure=${app.tenureMonths}&amount=${app.loanAmount}&rate=${app.interestRate}">
+💳 Pay EMI</a></p>
+
             </div>
             <div class="status-badge ${badgeClass}">
               ${badgeIcon} ${capitalize(status)}
