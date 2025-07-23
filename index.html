@@ -474,17 +474,9 @@
                     <a class="nav-link" href="#contact">Contact</a>
                 </li>
             </ul>
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="login.html">
-                        <i class="fas fa-sign-in-alt me-1"></i>Login
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="signup.html">
-                        <i class="fas fa-user-plus me-1"></i>Sign Up
-                    </a>
-                </li>
+            <!-- Dynamic Navigation Based on Login Status -->
+            <ul class="navbar-nav" id="authNavbar">
+                <!-- This will be populated dynamically by JavaScript -->
             </ul>
         </div>
     </div>
@@ -493,13 +485,27 @@
   <!-- Hero Section -->
   <div class="hero">
     <div class="hero-content">
-      <h1>Drive Your Dreams with AutoLoanPro</h1>
-      <p>Simple, quick, and hassle-free vehicle loans</p>
-      <a href="signup.html" class="btn btn-light mt-3">
-        <i class="fas fa-rocket me-2"></i>Apply Now
-      </a>
+      <h1 id="heroTitle">Drive Your Dreams with AutoLoanPro</h1>
+      <p id="heroSubtitle">Simple, quick, and hassle-free vehicle loans</p>
+      <div id="heroButton">
+        <!-- Dynamic button based on login status -->
+      </div>
     </div>
   </div>
+
+  <!-- User Welcome Section (Only shown when logged in) -->
+  <!-- <div class="container" id="welcomeSection" style="display: none;">
+    <div class="alert alert-success d-flex align-items-center mt-4" role="alert">
+      <i class="fas fa-user-circle fa-2x me-3"></i>
+      <div>
+        <h5 class="alert-heading mb-1">Welcome back, <span id="userName"></span>!</h5>
+        <p class="mb-0">Ready to explore our loan calculators and services?</p>
+      </div>
+      <a href="dashboard.html" class="btn btn-success ms-auto">
+        <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+      </a>
+    </div>
+  </div> -->
 
   <!-- Features Section -->
   <div class="container">
@@ -628,6 +634,148 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
+    // Authentication State Management
+    let currentUser = null;
+
+    // Check login status on page load
+    function checkLoginStatus() {
+      const loggedInUser = localStorage.getItem('loggedInUser');
+      if (loggedInUser) {
+        try {
+          currentUser = JSON.parse(loggedInUser);
+          updateUIForLoggedInUser();
+        } catch (error) {
+          console.error('Error parsing user data:', error);
+          localStorage.removeItem('loggedInUser');
+          updateUIForLoggedOutUser();
+        }
+      } else {
+        updateUIForLoggedOutUser();
+      }
+    }
+
+    // Update UI for logged-in user
+    function updateUIForLoggedInUser() {
+      // Update navigation
+      const authNavbar = document.getElementById('authNavbar');
+      authNavbar.innerHTML = `
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+            <i class="fas fa-user-circle me-1"></i>${currentUser.name}
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="dashboard.html">
+              <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+            </a></li>
+            <li><a class="dropdown-item" href="profile.html">
+              <i class="fas fa-user-edit me-2"></i>Profile
+            </a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#" onclick="logout()">
+              <i class="fas fa-sign-out-alt me-2"></i>Logout
+            </a></li>
+          </ul>
+        </li>
+      `;
+
+      // Update hero section
+      document.getElementById('heroTitle').textContent = `Welcome back, ${currentUser.name}!`;
+      document.getElementById('heroSubtitle').textContent = 'Continue your loan journey with us';
+      document.getElementById('heroButton').innerHTML = `
+        <a href="dashboard.html" class="btn btn-light mt-3">
+          <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+        </a>
+      `;
+
+      // Show welcome section
+      // const welcomeSection = document.getElementById('welcomeSection');
+      // const userName = document.getElementById('userName');
+      // welcomeSection.style.display = 'block';
+      // userName.textContent = currentUser.name;
+    }
+
+    // Update UI for logged-out user
+    function updateUIForLoggedOutUser() {
+      // Update navigation
+      const authNavbar = document.getElementById('authNavbar');
+      authNavbar.innerHTML = `
+        <li class="nav-item">
+          <a class="nav-link" href="login.html">
+            <i class="fas fa-sign-in-alt me-1"></i>Login
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="signup.html">
+            <i class="fas fa-user-plus me-1"></i>Sign Up
+          </a>
+        </li>
+      `;
+
+      // Reset hero section
+      document.getElementById('heroTitle').textContent = 'Drive Your Dreams with AutoLoanPro';
+      document.getElementById('heroSubtitle').textContent = 'Simple, quick, and hassle-free vehicle loans';
+      document.getElementById('heroButton').innerHTML = `
+        <a href="signup.html" class="btn btn-light mt-3">
+          <i class="fas fa-rocket me-2"></i>Apply Now
+        </a>
+      `;
+
+      // Hide welcome section
+      // document.getElementById('welcomeSection').style.display = 'none';
+    }
+
+    // Logout function
+    function logout() {
+      // Show confirmation dialog
+      if (confirm('Are you sure you want to logout?')) {
+        // Clear user data
+        localStorage.removeItem('loggedInUser');
+        currentUser = null;
+        
+        // Update UI
+        updateUIForLoggedOutUser();
+        
+        // Show logout notification
+        showNotification('You have been logged out successfully!', 'info');
+        
+        // Optional: Redirect to home page after a delay
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 2000);
+      }
+    }
+
+    // Show notification function
+    function showNotification(message, type = 'success') {
+      const notification = document.createElement('div');
+      notification.className = `alert alert-${type} position-fixed top-0 start-50 translate-middle-x`;
+      notification.style.zIndex = '9999';
+      notification.style.marginTop = '20px';
+      notification.style.borderRadius = '15px';
+      notification.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.2)';
+      
+      const icons = {
+        success: 'fas fa-check-circle',
+        info: 'fas fa-info-circle',
+        warning: 'fas fa-exclamation-triangle',
+        danger: 'fas fa-times-circle'
+      };
+      
+      notification.innerHTML = `
+        <i class="${icons[type]} me-2"></i>${message}
+        <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
+      `;
+      
+      document.body.appendChild(notification);
+      
+      // Auto-remove after 3 seconds
+      setTimeout(() => {
+        if (notification.parentNode) {
+          notification.remove();
+        }
+      }, 3000);
+    }
+
     // Create animated particles
     function createParticles() {
       const particles = document.getElementById('particles');
@@ -695,6 +843,10 @@
 
     // Initialize all animations and effects
     document.addEventListener('DOMContentLoaded', () => {
+      // Check login status first
+      checkLoginStatus();
+      
+      // Initialize other features
       createParticles();
       handleScrollAnimations();
       handleNavbarScroll();
@@ -713,6 +865,13 @@
           });
         }
       });
+    });
+
+    // Listen for storage changes (for multi-tab logout)
+    window.addEventListener('storage', function(e) {
+      if (e.key === 'loggedInUser') {
+        checkLoginStatus();
+      }
     });
   </script>
 </body>
