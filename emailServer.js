@@ -81,6 +81,40 @@ app.post('/send-otp-email', async (req, res) => {
     }
 });
 
+const multer = require('multer');
+const upload = multer(); // use memory storage for PDF
+
+app.post('/send-statement-email', upload.single('pdf'), async (req, res) => {
+  const { email, name } = req.body;
+  const { buffer } = req.file;
+
+  if (!email || !name || !buffer) {
+    return res.status(400).json({ success: false, message: 'Missing required fields.' });
+  }
+
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: 'Your Loan Statement - VehicleLoan Pro',
+    html: `<p>Hello ${name},</p><p>Your requested loan statement is attached as a PDF.</p><p>Best,<br>VehicleLoan Pro</p>`,
+    attachments: [
+      {
+        filename: 'Loan_Statement.pdf',
+        content: buffer
+      }
+    ]
+  };
+
+  try {
+    const info = await emailService.transporter.sendMail(mailOptions);
+    res.json({ success: true, messageId: info.messageId });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+
 
 // Health check endpoint
 app.get('/health', (req, res) => {
